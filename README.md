@@ -1,6 +1,3 @@
----
-
-````markdown
 # Sistema de Gestão de Treinos - *Em Desenvolvimento*
 
 Este é um sistema de gestão de treinos voltado para quem faz musculação, com o objetivo de facilitar o controle e organização de exercícios, séries, repetições e a rotina semanal de treinos dos usuários.
