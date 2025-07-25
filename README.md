@@ -1,3 +1,4 @@
+```markdown
 # Sistema de Gestão de Treinos - *Em Desenvolvimento*
 
 Este é um sistema de gestão de treinos para academias, com o objetivo de facilitar o controle de exercícios, séries, repetições e organização diária dos treinos.
