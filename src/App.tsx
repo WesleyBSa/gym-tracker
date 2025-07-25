@@ -44,7 +44,7 @@ const GymTrackerApp: React.FC = () => {
     }
   }, [workoutDays.length]);
 
-  // Login
+  // Login (Em alteração)
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (loginEmail && loginPassword) {
@@ -54,7 +54,7 @@ const GymTrackerApp: React.FC = () => {
     }
   };
 
-  // Logout
+  // Logout (Em alteração)
   const handleLogout = () => {
     setIsLoggedIn(false);
     setCurrentUser(null);
@@ -177,7 +177,6 @@ const GymTrackerApp: React.FC = () => {
     );
   }
 
-  // Mapeia jeitos de renderizar telas
   const renderScreen = () => {
     switch (currentScreen) {
       case 'dashboard':
