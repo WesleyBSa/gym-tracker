@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-import type { Exercise } from '../types';
 import { CATEGORIES } from '../types';
+import type { Exercise, ExerciseFormInput } from '../types';
 
 interface ExerciseFormModalProps {
-  onSave: (exercise: Exercise) => void;
+  onSave: (exercise: ExerciseFormInput) => void;
   onClose: () => void;
   exerciseToEdit?: Exercise | null;
 }
 
-const ExerciseFormModal: React.FC<ExerciseFormModalProps> = ({ onSave, onClose, exerciseToEdit }) => {
+
+const ExerciseFormModal: React.FC<ExerciseFormModalProps> = ({
+  onSave,
+  onClose,
+  exerciseToEdit,
+}) => {
   const [form, setForm] = useState<Omit<Exercise, 'id'>>({
     name: '',
     weight: 0,
@@ -38,16 +43,17 @@ const ExerciseFormModal: React.FC<ExerciseFormModalProps> = ({ onSave, onClose, 
   }, [exerciseToEdit]);
 
   const updateField = (field: keyof Omit<Exercise, 'id'>, value: any) => {
-    setForm(prev => ({ ...prev, [field]: value }));
+    setForm((prev) => ({ ...prev, [field]: value }));
   };
 
+  // 🚩 CORRIGIDO: não gera id localmente! Só envia o objeto pro backend criar.
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (form.name.trim()) {
       if (exerciseToEdit) {
-        onSave({ id: exerciseToEdit.id, ...form });
+        onSave({ id: exerciseToEdit.id, ...form }); // Edição mantém id
       } else {
-        onSave({ id: Date.now().toString(), ...form });
+        onSave({ ...form }); // Criação: NÃO manda id!
       }
       onClose();
     }
@@ -60,7 +66,12 @@ const ExerciseFormModal: React.FC<ExerciseFormModalProps> = ({ onSave, onClose, 
           <h2 className="text-xl font-bold text-gray-900">
             {exerciseToEdit ? 'Editar Exercício' : 'Novo Exercício'}
           </h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700" aria-label="Fechar">
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700"
+            aria-label="Fechar"
+            type="button"
+          >
             <X className="w-6 h-6" />
           </button>
         </div>
@@ -71,7 +82,7 @@ const ExerciseFormModal: React.FC<ExerciseFormModalProps> = ({ onSave, onClose, 
             <input
               type="text"
               value={form.name}
-              onChange={e => updateField('name', e.target.value)}
+              onChange={(e) => updateField('name', e.target.value)}
               placeholder="Ex: Supino reto"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               required
@@ -82,10 +93,10 @@ const ExerciseFormModal: React.FC<ExerciseFormModalProps> = ({ onSave, onClose, 
             <label className="block text-sm font-medium text-gray-700 mb-2">Categoria</label>
             <select
               value={form.category}
-              onChange={e => updateField('category', e.target.value)}
+              onChange={(e) => updateField('category', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
             >
-              {CATEGORIES.map(c => (
+              {CATEGORIES.map((c) => (
                 <option key={c} value={c}>
                   {c}
                 </option>
@@ -100,7 +111,7 @@ const ExerciseFormModal: React.FC<ExerciseFormModalProps> = ({ onSave, onClose, 
                 type="number"
                 min={1}
                 value={form.sets || ''}
-                onChange={e => updateField('sets', parseInt(e.target.value) || 0)}
+                onChange={(e) => updateField('sets', parseInt(e.target.value) || 0)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 required
               />
@@ -112,7 +123,7 @@ const ExerciseFormModal: React.FC<ExerciseFormModalProps> = ({ onSave, onClose, 
                 type="number"
                 min={1}
                 value={form.reps || ''}
-                onChange={e => updateField('reps', parseInt(e.target.value) || 0)}
+                onChange={(e) => updateField('reps', parseInt(e.target.value) || 0)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 required
               />
@@ -127,13 +138,13 @@ const ExerciseFormModal: React.FC<ExerciseFormModalProps> = ({ onSave, onClose, 
                 min={0}
                 step={0.5}
                 value={form.weight || ''}
-                onChange={e => updateField('weight', parseFloat(e.target.value) || 0)}
+                onChange={(e) => updateField('weight', parseFloat(e.target.value) || 0)}
                 className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 required
               />
               <select
                 value={form.weightUnit}
-                onChange={e => updateField('weightUnit', e.target.value as 'kg' | 'plates')}
+                onChange={(e) => updateField('weightUnit', e.target.value as 'kg' | 'plates')}
                 className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               >
                 <option value="kg">kg</option>
@@ -143,10 +154,12 @@ const ExerciseFormModal: React.FC<ExerciseFormModalProps> = ({ onSave, onClose, 
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Observações (opcional)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Observações (opcional)
+            </label>
             <textarea
               value={form.notes}
-              onChange={e => updateField('notes', e.target.value)}
+              onChange={(e) => updateField('notes', e.target.value)}
               rows={3}
               placeholder="Dicas ou observações sobre o exercício"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"

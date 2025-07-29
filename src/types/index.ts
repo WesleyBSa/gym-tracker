@@ -2,12 +2,15 @@ export interface Exercise {
   id: string;
   name: string;
   weight: number;
+  initialWeight?: number;
   weightUnit: 'kg' | 'plates';
   reps: number;
   sets: number;
   notes?: string;
   category: string;
 }
+
+export type ExerciseFormInput = Omit<Exercise, 'id'> & { id?: string };
 
 export interface WorkoutDay {
   day: string;

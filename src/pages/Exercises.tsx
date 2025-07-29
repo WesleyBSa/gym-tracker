@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Exercise } from '../types';
+import type { Exercise, ExerciseFormInput } from '../types';
 import { CATEGORIES } from '../types';
 import ExerciseFormModal from '../components/ExerciseFormModal';
 import ExerciseHeader from '../components/ExerciseHeader';
@@ -12,11 +12,12 @@ interface ExercisesProps {
   setExercises: React.Dispatch<React.SetStateAction<Exercise[]>>;
   showExerciseForm: boolean;
   setShowExerciseForm: React.Dispatch<React.SetStateAction<boolean>>;
-  addOrEditExercise: (exercise: Exercise) => void;
+  addOrEditExercise: (exercise: ExerciseFormInput) => void; // ATUALIZADO
   exerciseToEdit: Exercise | null;
   setExerciseToEdit: React.Dispatch<React.SetStateAction<Exercise | null>>;
   openNewExerciseForm: () => void;
   handleEditExercise: (exercise: Exercise) => void;
+  handleDeleteExercise: (exerciseId: string) => void;
 }
 
 const Exercises: React.FC<ExercisesProps> = ({
@@ -29,13 +30,14 @@ const Exercises: React.FC<ExercisesProps> = ({
   setExerciseToEdit,
   openNewExerciseForm,
   handleEditExercise,
+  handleDeleteExercise,
 }) => {
   const [searchTerm, setSearchTerm] = React.useState('');
   const [selectedCategory, setSelectedCategory] = React.useState<string>('all');
 
   // Filtrar exercícios
   const filteredExercises = React.useMemo(() => {
-    return exercises.filter(exercise => {
+    return exercises.filter((exercise) => {
       const matchesSearch = exercise.name.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory = selectedCategory === 'all' || exercise.category === selectedCategory;
       return matchesSearch && matchesCategory;
@@ -44,15 +46,11 @@ const Exercises: React.FC<ExercisesProps> = ({
 
   const exercisesByCategory = React.useMemo(() => {
     const acc: Record<string, Exercise[]> = {};
-    CATEGORIES.forEach(category => {
-      acc[category] = filteredExercises.filter(ex => ex.category === category);
+    CATEGORIES.forEach((category) => {
+      acc[category] = filteredExercises.filter((ex) => ex.category === category);
     });
     return acc;
   }, [filteredExercises]);
-
-  const handleDeleteExercise = (exerciseId: string) => {
-    setExercises(exercises.filter(ex => ex.id !== exerciseId));
-  };
 
   const handleClearFilters = () => {
     setSearchTerm('');
@@ -63,7 +61,7 @@ const Exercises: React.FC<ExercisesProps> = ({
 
   return (
     <div className="p-4 space-y-6 bg-gradient-to-br from-gray-50 to-white min-h-screen">
-      <ExerciseHeader 
+      <ExerciseHeader
         totalExercises={totalExercises}
         openNewExerciseForm={openNewExerciseForm}
       />
@@ -77,13 +75,11 @@ const Exercises: React.FC<ExercisesProps> = ({
 
       {/* Lista de exercícios por categoria */}
       {filteredExercises.length > 0 ? (
-        CATEGORIES.map(category => {
+        CATEGORIES.map((category) => {
           const categoryExercises = exercisesByCategory[category];
-          
           if (selectedCategory !== 'all' && selectedCategory !== category) {
             return null;
           }
-
           return (
             <CategorySection
               key={category}
@@ -105,7 +101,7 @@ const Exercises: React.FC<ExercisesProps> = ({
       {/* Modal do formulário */}
       {showExerciseForm && (
         <ExerciseFormModal
-          onSave={addOrEditExercise}
+          onSave={addOrEditExercise} // ATUALIZADO: tipos corretos!
           onClose={() => {
             setShowExerciseForm(false);
             setExerciseToEdit(null);

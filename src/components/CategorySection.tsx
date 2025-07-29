@@ -21,7 +21,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
       <CategoryHeader category={category} exerciseCount={exercises.length} />
-      
+
       <div className="divide-y divide-gray-100">
         {exercises.map((exercise, index) => (
           <ExerciseCard

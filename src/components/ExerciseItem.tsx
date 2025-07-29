@@ -17,6 +17,15 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
   isCompleted,
   toggleExerciseCompletion,
 }) => {
+  // Evolução de carga
+  const hasProgression =
+    typeof exercise.initialWeight === "number" &&
+    exercise.initialWeight !== exercise.weight;
+  const progressionUp =
+    hasProgression && exercise.weight > (exercise.initialWeight ?? exercise.weight);
+  const progressionDown =
+    hasProgression && exercise.weight < (exercise.initialWeight ?? exercise.weight);
+
   return (
     <div 
       className={`bg-white rounded-2xl shadow-md overflow-hidden transition-all duration-300 transform hover:scale-[1.02] ${
@@ -43,7 +52,23 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
               </span>
               <span className="flex items-center gap-1">
                 <Zap className="w-4 h-4" />
-                {exercise.weight} {exercise.weightUnit === 'kg' ? 'kg' : 'placas'}
+                <span className="flex items-center">
+                  {exercise.weight} 
+                  {/* Seta de progressão */}
+                  {progressionUp && (
+                    <span className="text-green-600 ml-2" title="Aumento de carga">⬆️</span>
+                  )}
+                  {progressionDown && (
+                    <span className="text-red-600 ml-2" title="Redução de carga">⬇️</span>
+                  )}
+                  {/* Peso inicial → atual */}
+                  {hasProgression && (
+                    <span className="ml-2 text-gray-500 text-xs">
+                      {exercise.initialWeight} → {exercise.weight}
+                    </span>
+                  )}
+                </span>
+                {exercise.weightUnit === 'kg' ? 'kg' : 'placas'}
               </span>
             </div>
           </div>
