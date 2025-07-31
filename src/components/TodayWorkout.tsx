@@ -29,7 +29,6 @@ const TodayWorkout: React.FC<TodayWorkoutProps> = ({
 
         {todayWorkout?.category ? (
           <div className="space-y-4">
-            {/* Workout Info Card */}
             <div className="bg-gradient-to-br from-indigo-50 via-purple-50 to-indigo-50 rounded-2xl p-4 border border-indigo-100/50">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -42,7 +41,6 @@ const TodayWorkout: React.FC<TodayWorkoutProps> = ({
                   </div>
                 </div>
                 
-                {/* Status Badge */}
                 <div className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 whitespace-nowrap ${
                   todayWorkout.completed 
                     ? 'bg-green-100 text-green-700 border border-green-200' 
@@ -59,7 +57,6 @@ const TodayWorkout: React.FC<TodayWorkoutProps> = ({
                 </div>
               </div>
               
-              {/* Action Buttons */}
               <div className="flex gap-3">
                 <button
                   onClick={() => setCurrentScreen('today')}

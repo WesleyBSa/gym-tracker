@@ -26,7 +26,6 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Progress Header */}
       <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-100">
         <div className="flex items-center justify-between mb-4">
           <div>
@@ -41,19 +40,16 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
           </div>
         </div>
         
-        {/* Progress Bar */}
         <div className="relative">
           <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
             <div 
               className="bg-gradient-to-r from-indigo-500 to-purple-600 h-full rounded-full transition-all duration-700 ease-out relative overflow-hidden"
               style={{ width: `${progressPercentage}%` }}
             >
-              {/* Animated shine effect */}
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse"></div>
             </div>
           </div>
           
-          {/* Progress markers */}
           <div className="flex justify-between mt-2">
             {Array.from({ length: Math.min(totalCount, 5) }, (_, i) => {
               const markerPosition = ((i + 1) / Math.min(totalCount, 5)) * 100;
@@ -71,9 +67,7 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
         </div>
       </div>
 
-      {/* Exercise Cards Container */}
       <div className="relative">
-        {/* Decorative background gradient */}
         <div className="absolute -inset-4 bg-gradient-to-r from-blue-50/50 via-transparent to-purple-50/50 rounded-3xl -z-10"></div>
         
         <div className="space-y-3">
@@ -92,7 +86,6 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
                   animationDelay: `${index * 50}ms`
                 }}
               >
-                {/* Card number indicator */}
                 <div className="relative">
                   <div className={`absolute -left-4 top-1/2 transform -translate-y-1/2 z-10 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 ${
                     isCompleted
@@ -102,7 +95,6 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
                     {isCompleted ? '✓' : index + 1}
                   </div>
                   
-                  {/* Connecting line to next exercise */}
                   {index < exercises.length - 1 && (
                     <div className={`absolute -left-2 top-full w-0.5 h-3 transition-colors duration-300 ${
                       isCompleted ? 'bg-green-300' : 'bg-gray-200'
@@ -122,7 +114,6 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
           })}
         </div>
         
-        {/* Completion celebration overlay */}
         {progressPercentage === 100 && (
           <div className="absolute inset-0 pointer-events-none">
             <div className="absolute inset-0 bg-gradient-to-r from-green-400/10 to-emerald-400/10 rounded-2xl animate-pulse"></div>
@@ -132,7 +123,6 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
         )}
       </div>
 
-      {/* Summary Footer */}
       {completedCount > 0 && (
         <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
           <div className="flex items-center justify-between text-sm">

@@ -35,7 +35,6 @@ const Exercises: React.FC<ExercisesProps> = ({
   const [searchTerm, setSearchTerm] = React.useState('');
   const [selectedCategory, setSelectedCategory] = React.useState<string>('all');
 
-  // Filtrar exercícios
   const filteredExercises = React.useMemo(() => {
     return exercises.filter((exercise) => {
       const matchesSearch = exercise.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -73,7 +72,6 @@ const Exercises: React.FC<ExercisesProps> = ({
         setSelectedCategory={setSelectedCategory}
       />
 
-      {/* Lista de exercícios por categoria */}
       {filteredExercises.length > 0 ? (
         CATEGORIES.map((category) => {
           const categoryExercises = exercisesByCategory[category];
@@ -98,10 +96,9 @@ const Exercises: React.FC<ExercisesProps> = ({
         />
       )}
 
-      {/* Modal do formulário */}
       {showExerciseForm && (
         <ExerciseFormModal
-          onSave={addOrEditExercise} // ATUALIZADO: tipos corretos!
+          onSave={addOrEditExercise}
           onClose={() => {
             setShowExerciseForm(false);
             setExerciseToEdit(null);

@@ -12,7 +12,6 @@ interface StatsCardsProps {
 const StatsCards: React.FC<StatsCardsProps> = ({ stats }) => {
   return (
     <div className="space-y-3 px-1">
-      {/* Main Card - Treinos Completos */}
       <div className="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-3xl p-6 text-white shadow-xl shadow-emerald-500/20 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -translate-y-6 translate-x-6"></div>
         <div className="relative z-10">
@@ -32,9 +31,7 @@ const StatsCards: React.FC<StatsCardsProps> = ({ stats }) => {
         </div>
       </div>
 
-      {/* Secondary Cards Grid */}
       <div className="grid grid-cols-2 gap-3">
-        {/* Success Rate */}
         <div className="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl p-5 text-white shadow-lg shadow-blue-500/15 relative overflow-hidden">
           <div className="absolute -top-4 -right-4 w-16 h-16 bg-white/10 rounded-full"></div>
           <div className="relative z-10">
@@ -46,7 +43,6 @@ const StatsCards: React.FC<StatsCardsProps> = ({ stats }) => {
           </div>
         </div>
 
-        {/* Streak */}
         <div className="bg-gradient-to-br from-violet-500 to-purple-600 rounded-2xl p-5 text-white shadow-lg shadow-violet-500/15 relative overflow-hidden">
           <div className="absolute -top-4 -right-4 w-16 h-16 bg-white/10 rounded-full"></div>
           <div className="relative z-10">

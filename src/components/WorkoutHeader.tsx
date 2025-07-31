@@ -37,7 +37,6 @@ const WorkoutHeader: React.FC<WorkoutHeaderProps> = ({
           </div>
         </div>
 
-        {/* Barra de progresso */}
         <div className="bg-white/20 rounded-full h-3 mb-4">
           <div 
             className="bg-gradient-to-r from-green-400 to-green-500 h-3 rounded-full transition-all duration-500 ease-out"

@@ -38,7 +38,6 @@ const Today: React.FC<TodayProps> = ({
     ? (completedExercises.size / todayWorkout.exercises.length) * 100 
     : 0;
 
-  // Se não há treino hoje (dia de descanso)
   if (!todayWorkout?.category) {
     return <RestDayCard setCurrentScreen={setCurrentScreen} />;
   }
@@ -64,7 +63,6 @@ const Today: React.FC<TodayProps> = ({
         setCurrentScreen={setCurrentScreen}
       />
 
-      {/* Botão fixo de conclusão se todos exercícios estiverem completos */}
       {isWorkoutComplete && (
         <CompletionButton 
           onClick={() => toggleDayCompletion(todayIndex)} 

@@ -11,7 +11,6 @@ interface DayCardProps {
   toggleDayCompletion: (dayIndex: number) => void;
 }
 
-// Mapeamento de categorias para ícones e símbolos
 const getCategoryIcon = (category: string) => {
   const iconMap: { [key: string]: { emoji: string; icon: React.ReactNode; color: string; bgColor: string } } = {
     'Peito': {
@@ -43,12 +42,6 @@ const getCategoryIcon = (category: string) => {
       icon: <div className="text-white font-bold text-sm">💪</div>,
       color: 'text-indigo-700',
       bgColor: 'bg-gradient-to-br from-indigo-500 to-indigo-600'
-    },
-    'Abdômen': {
-      emoji: '🔥',
-      icon: <div className="text-white font-bold text-sm">A</div>,
-      color: 'text-red-700',
-      bgColor: 'bg-gradient-to-br from-red-500 to-red-600'
     },
     'Cardio': {
       emoji: '❤️',
@@ -95,7 +88,6 @@ const DayCard: React.FC<DayCardProps> = ({
         isToday ? 'ring-2 ring-violet-400/50 ring-offset-2 ring-offset-white shadow-lg bg-white' : ''
       }`}
     >
-      {/* Indicador do dia atual */}
       {isToday && (
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-violet-400 via-indigo-400 to-blue-400"></div>
       )}
@@ -129,7 +121,6 @@ const DayCard: React.FC<DayCardProps> = ({
         )}
       </div>
 
-      {/* Select customizado */}
       <div className="relative mb-4">
         <select
           value={day.category}
@@ -151,7 +142,6 @@ const DayCard: React.FC<DayCardProps> = ({
         </div>
       </div>
 
-      {/* Informações do treino ou descanso */}
       {day.category ? (
         <div className={`bg-gradient-to-br ${getCategoryGradient(day.category)} rounded-xl p-4 border backdrop-blur-sm transition-all duration-200`}>
           <div className="flex items-center justify-between">

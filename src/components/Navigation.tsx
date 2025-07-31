@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BarChart3, Calendar, Dumbbell, Target } from 'lucide-react';
 
 interface NavigationProps {
@@ -7,6 +7,29 @@ interface NavigationProps {
 }
 
 const Navigation: React.FC<NavigationProps> = ({ currentScreen, setCurrentScreen }) => {
+  const [isFloating, setIsFloating] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      
+      const scrollPercentage = (scrollTop + windowHeight) / documentHeight;
+      
+      if (scrollPercentage > 0.2 && scrollPercentage < 0.9) {
+        setIsFloating(true);
+      } else {
+        setIsFloating(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
   const navItems = [
     { key: 'dashboard', icon: BarChart3, label: 'Dashboard' },
     { key: 'schedule', icon: Calendar, label: 'Agenda' },
@@ -15,7 +38,11 @@ const Navigation: React.FC<NavigationProps> = ({ currentScreen, setCurrentScreen
   ];
 
   return (
-    <div className="bg-white border-t border-gray-200 px-4 py-2">
+    <div className={`bg-white border-t border-gray-200 px-4 py-2 transition-all duration-300 ${
+      isFloating 
+        ? 'fixed bottom-0 left-0 right-0 z-50 translate-y-0' 
+        : 'relative'
+    }`}>
       <div className="flex justify-around">
         {navItems.map(({ key, icon: Icon, label }) => (
           <button

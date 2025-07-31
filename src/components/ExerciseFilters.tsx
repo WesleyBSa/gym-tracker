@@ -23,7 +23,6 @@ const ExerciseFilters: React.FC<ExerciseFiltersProps> = ({
 
   return (
     <div className="bg-white rounded-2xl p-4 shadow-lg space-y-4">
-      {/* Barra de pesquisa */}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
         <input
@@ -35,7 +34,6 @@ const ExerciseFilters: React.FC<ExerciseFiltersProps> = ({
         />
       </div>
 
-      {/* Filtro por categoria com dropdown */}
       <div className="relative">
         <button
           onClick={() => setIsFilterOpen(!isFilterOpen)}
@@ -54,7 +52,6 @@ const ExerciseFilters: React.FC<ExerciseFiltersProps> = ({
           />
         </button>
 
-        {/* Dropdown das categorias */}
         {isFilterOpen && (
           <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-lg z-10 max-h-60 overflow-y-auto">
             <div className="p-2">

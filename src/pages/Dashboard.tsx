@@ -20,7 +20,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   getCompletionStats,
   getCurrentDayIndex,
   setCurrentScreen,
-  currentUser // <====
+  currentUser 
 }) => {
   const stats = getCompletionStats();
   const todayIndex = getCurrentDayIndex();

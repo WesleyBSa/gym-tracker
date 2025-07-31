@@ -15,7 +15,6 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
   handleEditExercise,
   onDelete,
 }) => {
-  // Determina se houve evolução
   const hasProgression =
     typeof exercise.initialWeight === "number" &&
     exercise.weight !== exercise.initialWeight;
@@ -93,7 +92,6 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
           </div>
           
           <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-4 text-center border border-purple-200 group-hover:shadow-sm transition-shadow relative overflow-hidden">
-            {/* Indicador de progresso visual no fundo */}
             {hasProgression && (
               <div className={`absolute inset-0 opacity-10 ${progressionUp ? 'bg-green-500' : 'bg-red-500'}`} />
             )}
@@ -117,7 +115,6 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
                 {exercise.weightUnit === 'kg' ? 'Kg' : 'Placas'}
               </p>
               
-              {/* Informação de progressão melhorada */}
               {hasProgression && (
                 <div className="mt-2 space-y-1">
                   <div className={`text-xs px-2 py-1 rounded-full font-semibold ${

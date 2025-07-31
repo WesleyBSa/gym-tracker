@@ -17,7 +17,6 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
   isCompleted,
   toggleExerciseCompletion,
 }) => {
-  // Evolução de carga
   const hasProgression =
     typeof exercise.initialWeight === "number" &&
     exercise.initialWeight !== exercise.weight;
@@ -54,14 +53,12 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
                 <Zap className="w-4 h-4" />
                 <span className="flex items-center">
                   {exercise.weight} 
-                  {/* Seta de progressão */}
                   {progressionUp && (
                     <span className="text-green-600 ml-2" title="Aumento de carga">⬆️</span>
                   )}
                   {progressionDown && (
                     <span className="text-red-600 ml-2" title="Redução de carga">⬇️</span>
                   )}
-                  {/* Peso inicial → atual */}
                   {hasProgression && (
                     <span className="ml-2 text-gray-500 text-xs">
                       {exercise.initialWeight} → {exercise.weight}
@@ -85,7 +82,6 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
           </button>
         </div>
 
-        {/* Stats do exercício */}
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div className={`text-center rounded-xl p-4 transition-colors ${
             isCompleted ? 'bg-green-100' : 'bg-gray-50'
@@ -109,7 +105,6 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
           </div>
         </div>
 
-        {/* Observações */}
         {exercise.notes && (
           <div className={`rounded-xl p-4 transition-all duration-300 ${
             isCompleted ? 'bg-green-100 border border-green-200' : 'bg-blue-50 border border-blue-200'
@@ -120,7 +115,6 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
           </div>
         )}
 
-        {/* Botão de ação do exercício */}
         <div className="mt-4 pt-4 border-t border-gray-100">
           <button
             onClick={() => toggleExerciseCompletion(exercise.id)}
