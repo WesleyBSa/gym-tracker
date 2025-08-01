@@ -8,11 +8,47 @@ import Schedule from "./pages/Schedule";
 import Exercises from "./pages/Exercises";
 import Today from "./pages/Today";
 import ExerciseFormModal from "./components/ExerciseFormModal";
-import { Dumbbell } from "lucide-react";
+import { Dumbbell, UserPlus, LogIn, Eye, EyeOff } from "lucide-react";
 
 // URL base da API
 const API_BASE = "http://localhost:3001/api";
 const getToken = () => localStorage.getItem("gym_token");
+
+// Componente para input de senha com toggle (movido para fora do componente principal)
+const PasswordInput: React.FC<{
+  value: string;
+  onChange: (value: string) => void;
+  placeholder: string;
+  showPassword: boolean;
+  togglePassword: () => void;
+  minLength?: number;
+  required?: boolean;
+}> = ({ value, onChange, placeholder, showPassword, togglePassword, minLength, required = true }) => (
+  <div className="relative">
+    <input
+      type={showPassword ? "text" : "password"}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+      placeholder={placeholder}
+      minLength={minLength}
+      required={required}
+    />
+    <button
+      type="button"
+      onClick={togglePassword}
+      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors duration-200 p-1"
+    >
+      <div className="transform transition-all duration-300 ease-in-out hover:scale-110">
+        {showPassword ? (
+          <EyeOff className="w-5 h-5 transition-opacity duration-300" />
+        ) : (
+          <Eye className="w-5 h-5 transition-opacity duration-300" />
+        )}
+      </div>
+    </button>
+  </div>
+);
 
 const GymTrackerApp: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -20,9 +56,24 @@ const GymTrackerApp: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState("dashboard");
   const [workoutDays, setWorkoutDays] = useState<WorkoutDay[]>([]);
   const [exercises, setExercises] = useState<Exercise[]>([]);
+  
+  // Estados para login
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [loginError, setLoginError] = useState<string>("");
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  
+  // Estados para registro
+  const [isRegisterMode, setIsRegisterMode] = useState(false);
+  const [registerName, setRegisterName] = useState("");
+  const [registerEmail, setRegisterEmail] = useState("");
+  const [registerPassword, setRegisterPassword] = useState("");
+  const [registerConfirmPassword, setRegisterConfirmPassword] = useState("");
+  const [registerError, setRegisterError] = useState<string>("");
+  const [registerSuccess, setRegisterSuccess] = useState<string>("");
+  const [showRegisterPassword, setShowRegisterPassword] = useState(false);
+  const [showRegisterConfirmPassword, setShowRegisterConfirmPassword] = useState(false);
+  
   const [showExerciseForm, setShowExerciseForm] = useState(false);
   const [exerciseToEdit, setExerciseToEdit] = useState<Exercise | null>(null);
 
@@ -47,8 +98,7 @@ const GymTrackerApp: React.FC = () => {
     }
   }, []);
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleLogin = async () => {
     setLoginError("");
     try {
       const resp = await fetch(`${API_BASE}/auth/login`, {
@@ -75,6 +125,57 @@ const GymTrackerApp: React.FC = () => {
     }
   };
 
+  const handleRegister = async () => {
+    setRegisterError("");
+    setRegisterSuccess("");
+
+    // Validações básicas
+    if (registerPassword !== registerConfirmPassword) {
+      setRegisterError("As senhas não coincidem");
+      return;
+    }
+
+    if (registerPassword.length < 6) {
+      setRegisterError("A senha deve ter pelo menos 6 caracteres");
+      return;
+    }
+
+    try {
+      const resp = await fetch(`${API_BASE}/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          name: registerName,
+          email: registerEmail, 
+          password: registerPassword 
+        }),
+      });
+      
+      if (!resp.ok) {
+        const err = await resp.json();
+        setRegisterError(err.error || "Erro ao criar conta");
+        return;
+      }
+
+      setRegisterSuccess("Conta criada com sucesso! Você pode fazer login agora.");
+      
+      // Limpar formulário de registro
+      setRegisterName("");
+      setRegisterEmail("");
+      setRegisterPassword("");
+      setRegisterConfirmPassword("");
+      
+      // Voltar para tela de login após 2 segundos
+      setTimeout(() => {
+        setIsRegisterMode(false);
+        setRegisterSuccess("");
+      }, 2000);
+
+    } catch (error) {
+      setRegisterError("Erro ao criar conta. Tente novamente.");
+    }
+  };
+
   const handleLogout = () => {
     setIsLoggedIn(false);
     setCurrentUser(null);
@@ -84,6 +185,26 @@ const GymTrackerApp: React.FC = () => {
     setCurrentScreen("dashboard");
     setWorkoutDays([]);
     setExercises([]);
+  };
+
+  const toggleMode = () => {
+    setIsRegisterMode(!isRegisterMode);
+    setLoginError("");
+    setRegisterError("");
+    setRegisterSuccess("");
+    
+    // Limpar campos
+    setLoginEmail("");
+    setLoginPassword("");
+    setRegisterName("");
+    setRegisterEmail("");
+    setRegisterPassword("");
+    setRegisterConfirmPassword("");
+    
+    // Reset password visibility
+    setShowLoginPassword(false);
+    setShowRegisterPassword(false);
+    setShowRegisterConfirmPassword(false);
   };
 
   const loadExercises = useCallback(async (forcedToken?: string) => {
@@ -205,6 +326,8 @@ const GymTrackerApp: React.FC = () => {
     return today === 0 ? 6 : today - 1;
   };
 
+
+
   if (!isLoggedIn) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
@@ -214,41 +337,132 @@ const GymTrackerApp: React.FC = () => {
               <Dumbbell className="w-8 h-8 text-indigo-600" />
             </div>
             <h1 className="text-2xl font-bold text-gray-900">GymTracker</h1>
-            <p className="text-gray-600 mt-2">Gerencie seus treinos</p>
+            <p className="text-gray-600 mt-2">
+              {isRegisterMode ? "Crie sua conta" : "Gerencie seus treinos"}
+            </p>
           </div>
-          <form onSubmit={handleLogin} className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-              <input
-                type="email"
-                value={loginEmail}
-                onChange={(e) => setLoginEmail(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                placeholder="seu@email.com"
-                required
-              />
+
+          {!isRegisterMode ? (
+            // FORMULÁRIO DE LOGIN
+            <div className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                <input
+                  type="email"
+                  value={loginEmail}
+                  onChange={(e) => setLoginEmail(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  placeholder="seu@email.com"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Senha</label>
+                <PasswordInput
+                  value={loginPassword}
+                  onChange={setLoginPassword}
+                  placeholder="••••••••"
+                  showPassword={showLoginPassword}
+                  togglePassword={() => setShowLoginPassword(!showLoginPassword)}
+                />
+              </div>
+              <button
+                onClick={handleLogin}
+                className="w-full bg-indigo-600 text-white py-3 rounded-lg font-medium hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2"
+              >
+                <LogIn className="w-4 h-4" />
+                Entrar
+              </button>
+              {loginError && (
+                <div className="text-red-600 text-sm text-center bg-red-50 p-3 rounded-lg">
+                  {loginError}
+                </div>
+              )}
+              <div className="text-center">
+                <button
+                  type="button"
+                  onClick={toggleMode}
+                  className="text-indigo-600 hover:text-indigo-700 text-sm font-medium"
+                >
+                  Não tem conta? Criar conta
+                </button>
+              </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Senha</label>
-              <input
-                type="password"
-                value={loginPassword}
-                onChange={(e) => setLoginPassword(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                placeholder="••••••••"
-                required
-              />
+          ) : (
+            // FORMULÁRIO DE REGISTRO
+            <div className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Nome</label>
+                <input
+                  type="text"
+                  value={registerName}
+                  onChange={(e) => setRegisterName(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  placeholder="Seu nome completo"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                <input
+                  type="email"
+                  value={registerEmail}
+                  onChange={(e) => setRegisterEmail(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  placeholder="seu@email.com"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Senha</label>
+                <PasswordInput
+                  value={registerPassword}
+                  onChange={setRegisterPassword}
+                  placeholder="••••••••"
+                  showPassword={showRegisterPassword}
+                  togglePassword={() => setShowRegisterPassword(!showRegisterPassword)}
+                  minLength={6}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Confirmar Senha</label>
+                <PasswordInput
+                  value={registerConfirmPassword}
+                  onChange={setRegisterConfirmPassword}
+                  placeholder="••••••••"
+                  showPassword={showRegisterConfirmPassword}
+                  togglePassword={() => setShowRegisterConfirmPassword(!showRegisterConfirmPassword)}
+                  minLength={6}
+                />
+              </div>
+              <button
+                onClick={handleRegister}
+                className="w-full bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
+              >
+                <UserPlus className="w-4 h-4" />
+                Criar Conta
+              </button>
+              {registerError && (
+                <div className="text-red-600 text-sm text-center bg-red-50 p-3 rounded-lg">
+                  {registerError}
+                </div>
+              )}
+              {registerSuccess && (
+                <div className="text-green-600 text-sm text-center bg-green-50 p-3 rounded-lg">
+                  {registerSuccess}
+                </div>
+              )}
+              <div className="text-center">
+                <button
+                  type="button"
+                  onClick={toggleMode}
+                  className="text-indigo-600 hover:text-indigo-700 text-sm font-medium"
+                >
+                  Já tem conta? Fazer login
+                </button>
+              </div>
             </div>
-            <button
-              type="submit"
-              className="w-full bg-indigo-600 text-white py-3 rounded-lg font-medium hover:bg-indigo-700 transition-colors"
-            >
-              Entrar
-            </button>
-            {loginError && (
-              <div className="text-red-600 text-sm text-center">{loginError}</div>
-            )}
-          </form>
+          )}
         </div>
       </div>
     );
